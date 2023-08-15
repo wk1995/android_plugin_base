@@ -1,18 +1,14 @@
 package custom.android.plugin
 
-import groovy.lang.Closure
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskAction
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.net.URI
-import java.util.concurrent.atomic.AtomicBoolean
 
 open class PublishTask : DefaultTask() {
 
-    //是否完成执行任务
 
     //检验状态是否通过
     private var checkStatus = false
@@ -98,7 +94,6 @@ open class PublishTask : DefaultTask() {
             val path="${project.rootDir}${File.separator}gradlew"
             println("$TAG path: $path realTaskName: $realTaskName")
             //通过命令行的方式进行调用上传maven的task
-            var output:String=""
             val execResult=project.exec { exec ->
                 exec.standardOutput=out
                 exec.setCommandLine(
@@ -106,7 +101,7 @@ open class PublishTask : DefaultTask() {
                     realTaskName
                 )
             }
-            println("Command output:\n$output  result ${execResult.assertNormalExitValue()}")
+            println("Command output:  result ${execResult.assertNormalExitValue()}")
 
             val result = out.toString()
             println("$TAG executeTask result $result")
@@ -120,7 +115,6 @@ open class PublishTask : DefaultTask() {
                 } else {
                     //提示错误信息
                 }
-                executeFinish()
             } else {
                 throw Exception("上传Maven仓库失败，请检查配置！")
             }
@@ -128,19 +122,18 @@ open class PublishTask : DefaultTask() {
         }
     }
 
+    /**
+     * 上报服务器进行版本检查,这里直接模拟返回成功
+     * */
     private fun requestCheckVersion(): Boolean {
-        //TODO 上报服务器进行版本检查,这里直接模拟返回成功
-        return true
-    }
-
-    private fun requestUploadVersion(): Boolean {
-        //TODO 上报服务器进行版本更新操作,这里直接模拟返回成功
         return true
     }
 
     /**
-     * 任务执行完毕
-     */
-    private fun executeFinish() {
+     * 上报服务器进行版本更新操作,这里直接模拟返回成功
+     * */
+    private fun requestUploadVersion(): Boolean {
+        return true
     }
+
 }

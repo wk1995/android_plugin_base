@@ -22,16 +22,12 @@ open class PublishPlugin : Plugin<Project> {
         project.afterEvaluate { currentProject ->
             try {
                 val publishInfo = project.extensions.getByType(PublishInfo::class.java)
-                println("$TAG afterEvaluate")
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
-                println("$TAG publishing $publishing")
                 val components = currentProject.components
-                println("$TAG size ${components.size}")
                 components.forEach {
                     println("$TAG name: ${it.name}")
                     if (it.name == "release") {
                         publishing.publications { publications ->
-                            println("$TAG create myRelease $publications")
                             //注册上传task
                             publications.create(
                                 "myRelease",
@@ -66,22 +62,9 @@ open class PublishPlugin : Plugin<Project> {
             if (currProjectName == currProject.displayName) {
                 println(" $currProjectName start register ")
                 project.tasks.register("PublishLocalMaven", PublishLocalTask::class.java)
-//                project.tasks.register("publishLocal", PublishLocalTask::class.java)
+                project.tasks.register("PublishRemoteMaven", PublishLocalTask::class.java)
             }
         }
-
-//        target.getTasks().register()
-        /* target.getTasks().register("greeting",PublishTask.class) {
-            println("Hello from plugin 'com.lenebf.plugin.hello.greeting'")
-            doLast {
-                println("√lugin.hello.greeting' doLast ")
-            }
-            doFirst {
-                println("Hello from plugin 'com.lenebf.plugin.hello.greeting' doFirst ")
-            }
-            setGroup("customPlugin");
-            setDescription("this is description");
-        }*/
     }
 
 

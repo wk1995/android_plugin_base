@@ -1,5 +1,6 @@
 package custom.android.plugin
 
+import custom.android.plugin.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -30,7 +31,7 @@ open class PublishPlugin : Plugin<Project> {
                         publishing.publications { publications ->
                             //注册上传task
                             publications.create(
-                                "myRelease",
+                                MAVEN_PUBLICATION_NAME,
                                 MavenPublication::class.java
                             ) { publication ->
                                 publication.groupId = publishInfo.groupId
@@ -62,7 +63,7 @@ open class PublishPlugin : Plugin<Project> {
             if (currProjectName == currProject.displayName) {
                 println(" $currProjectName start register ")
                 project.tasks.register("PublishLocalMaven", PublishLocalTask::class.java)
-                project.tasks.register("PublishRemoteMaven", PublishLocalTask::class.java)
+                project.tasks.register("PublishRemoteMaven", PublishTask::class.java)
             }
         }
     }

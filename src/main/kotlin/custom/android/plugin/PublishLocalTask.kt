@@ -1,5 +1,8 @@
 package custom.android.plugin
 
+import custom.android.plugin.PluginLogUtil.printlnDebugInScreen
+import custom.android.plugin.PluginLogUtil.printlnErrorInScreen
+import custom.android.plugin.PluginLogUtil.printlnInfoInScreen
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -37,16 +40,11 @@ open class PublishLocalTask : DefaultTask() {
             project.projectDir.absolutePath
                 .removePrefix(project.rootDir.absolutePath)
                 .replace(File.separator, ":") + ":publishToMavenLocal"
-        val publishing = project.extensions.getByType(PublishingExtension::class.java)
-        publishing.publications { publications ->
-            val mavenPublication =
-                publications.getByName("myRelease") as MavenPublication
-            println("executeTask mavenPublication version ${mavenPublication.version}")
-        }
+
         if (checkStatus) {
             val out = ByteArrayOutputStream()
             val path="${project.rootDir}${File.separator}gradlew"
-            println("$TAG path: $path realTaskName: $realTaskName")
+            printlnDebugInScreen("$TAG path: $path realTaskName: $realTaskName")
             //通过命令行的方式进行调用上传maven的task
             project.exec { exec ->
                 exec.standardOutput=out
@@ -56,21 +54,54 @@ open class PublishLocalTask : DefaultTask() {
                 )
             }
             val result = out.toString()
-            println("$TAG executeTask result $result")
+
             if (result.contains("UP-TO-DATE")) {
                 //上传maven仓库成功，上报到服务器
-                println("$TAG executeTask result 1111  $result")
                 val isSuccess = requestUploadVersion()
-                println("isSuccess: $isSuccess")
                 if (isSuccess) {
+                    val publishing = project.extensions.getByType(PublishingExtension::class.java)
+                    var groupId = ""
+                    var artifactId = ""
+                    var version = ""
+                    var url=""
+                    publishing.publications { publications ->
+                        val mavenPublication =
+                            publications.getByName("myRelease") as MavenPublication
+                        groupId = mavenPublication.groupId
+                        artifactId = mavenPublication.artifactId
+                        version = mavenPublication.version
+
+                    }
+                    publishing.repositories {artifactRepositories->
+                        artifactRepositories.maven {
+                            //url可能为null，虽然提示不会为null
+                            printlnInfoInScreen("${it.name} url: ${it.url?.toString()}")
+                        }
+                    }
+                    publishing.repositories.maven {
+                        printlnInfoInScreen("11111   ${it.name} url: ${it.url?.toString()}")
+                    }
+                    printlnInfoInScreen("mavenLocal  ${publishing.repositories.mavenLocal().url}")
+                    printlnInfoInScreen("构建成功")
+                    printlnInfoInScreen("仓库地址：  $url")
+                    printlnInfoInScreen("===================================================================")
+                    printlnInfoInScreen("")
+                    printlnInfoInScreen("implementation '$groupId:$artifactId:$version'")
+                    printlnInfoInScreen("")
+                    printlnInfoInScreen("==================================================================")
                     //提示成功信息
                 } else {
                     //提示错误信息
                 }
             } else {
+                printlnErrorInScreen("===============================下面是执行指令的输出结果===============================")
+                printlnErrorInScreen("")
+                printlnErrorInScreen(result)
+                printlnErrorInScreen("")
+                printlnErrorInScreen("==================================================================================")
                 throw Exception("上传Maven仓库失败，请检查配置！")
             }
-            println("$TAG executeTask finish ")
+            printlnDebugInScreen("$TAG executeTask finish ")
         }
     }
 

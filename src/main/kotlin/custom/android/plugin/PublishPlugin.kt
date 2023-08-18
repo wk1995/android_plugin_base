@@ -6,7 +6,9 @@ import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.jvm.tasks.Jar
 import java.net.URI
+import com.android.build.gradle.LibraryExtension
 
 open class PublishPlugin : Plugin<Project> {
     companion object {
@@ -37,6 +39,24 @@ open class PublishPlugin : Plugin<Project> {
                                 publication.groupId = publishInfo.groupId
                                 publication.artifactId = publishInfo.artifactId
                                 publication.version = publishInfo.version
+                                if (publication.version.endsWith("-debug")) {
+                                    val taskName = "androidSourcesJar"
+                                    //获取build.gradle中的android节点
+                                    val androidSet =
+                                        project.extensions.getByName("android") as LibraryExtension
+                                    val sourceSet = androidSet.sourceSets
+                                    //获取android节点下的源码目录
+                                    val sourceSetFiles = sourceSet.findByName("main")?.java?.srcDirs
+                                    val task =
+                                        project.tasks.findByName(taskName) ?: project.tasks.create(
+                                            taskName,
+                                            Jar::class.java
+                                        ) {
+                                            it.from(sourceSetFiles)
+                                            it.archiveClassifier.set("sources")
+                                        }
+                                    publication.artifact(task)
+                                }
                                 publication.from(it)
                             }
                         }

@@ -35,5 +35,23 @@ publishing {
             from components.java
         }
     }
+
+
+    repositories {
+        maven {
+            //nexus账号密码在local.properties文件中配置
+            Properties properties = new Properties()// local.properties file in the root director
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            def userName = properties.getProperty("ossrhUsername")
+            def passWord = properties.getProperty("ossrhPassword")
+            //允许使用 http
+            setAllowInsecureProtocol(true)
+            setUrl("https://s01.oss.sonatype.org/content/repositories/releases/")
+            credentials {
+                username = userName
+                password = passWord
+            }
+        }
+    }
 }
 

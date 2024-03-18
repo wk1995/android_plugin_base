@@ -90,6 +90,10 @@ abstract class BasePublishTask : DefaultTask() {
                     PluginLogUtil.printlnInfoInScreen("implementation '$groupId:$artifactId:$version'")
                     PluginLogUtil.printlnInfoInScreen("")
                     PluginLogUtil.printlnInfoInScreen("==================================================================")
+                    PluginLogUtil.printlnInfoInScreen("")
+                    PluginLogUtil.printlnInfoInScreen("implementation (\"$groupId:$artifactId:$version\")")
+                    PluginLogUtil.printlnInfoInScreen("")
+                    PluginLogUtil.printlnInfoInScreen("==================================================================")
                     //提示成功信息
                 } else {
                     //提示错误信息

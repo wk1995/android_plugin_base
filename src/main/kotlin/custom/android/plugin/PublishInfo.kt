@@ -2,9 +2,19 @@ package custom.android.plugin
 
 open class PublishInfo {
 
-    companion object{
+
+    companion object {
         const val EXTENSION_PUBLISH_INFO_NAME = "PublishInfo"
     }
+
+    constructor()
+
+    constructor(groupId: String, artifactId: String, version: String) {
+        this.groupId = groupId
+        this.artifactId = artifactId
+        this.version = version
+    }
+
     /**
      * 包名
      */

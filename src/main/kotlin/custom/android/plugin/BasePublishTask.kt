@@ -89,11 +89,11 @@ abstract class BasePublishTask : DefaultTask() {
                     val pathSb = StringBuilder()
                     pathSb.append(getPublishingExtensionRepositoriesPath(publishing))
                     fileNames.forEach {
-                        pathSb.append(File.separator)
                         pathSb.append(it)
+                        pathSb.append(File.separatorChar)
                     }
-                    pathSb.append(File.separator)
-                    pathSb.append(artifactId)
+//                    pathSb.append(artifactId)
+//                    pathSb.append(File.separatorChar)
                     PluginLogUtil.printlnInfoInScreen("构建成功")
                     PluginLogUtil.printlnInfoInScreen("仓库地址：  $pathSb")
                     PluginLogUtil.printlnInfoInScreen("===================================================================")

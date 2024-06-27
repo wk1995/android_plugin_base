@@ -1,6 +1,6 @@
 package custom.android.plugin
 
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.publish.PublishingExtension
 
 
 /**
@@ -12,6 +12,9 @@ open class PublishLocalTask : BasePublishTask() {
         private const val TAG = "PublishLocalTask"
     }
 
-    override fun initPublishCommandLine()=":publishToMavenLocal"
+    override fun initPublishCommandLine() = ":publishToMavenLocal"
 
+    override fun getPublishingExtensionRepositoriesPath(publishing: PublishingExtension): String {
+        return publishing.repositories.mavenLocal().url.toString()
+    }
 }

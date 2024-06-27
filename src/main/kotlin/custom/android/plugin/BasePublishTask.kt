@@ -6,10 +6,12 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskAction
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.lang.StringBuilder
 
 abstract class BasePublishTask : DefaultTask() {
     //检验状态是否通过
     private var checkStatus = false
+
     /**
      * 不能写成get/set
      * */
@@ -17,7 +19,7 @@ abstract class BasePublishTask : DefaultTask() {
 
     companion object {
         private const val TAG = "BasePublishTask"
-        const val MAVEN_PUBLICATION_NAME="myRelease"
+        const val MAVEN_PUBLICATION_NAME = "myRelease"
     }
 
     init {
@@ -66,7 +68,6 @@ abstract class BasePublishTask : DefaultTask() {
                     var groupId = ""
                     var artifactId = ""
                     var version = ""
-                    var url = ""
                     publishing.publications { publications ->
                         val mavenPublication =
                             publications.getByName(MAVEN_PUBLICATION_NAME) as MavenPublication
@@ -84,9 +85,17 @@ abstract class BasePublishTask : DefaultTask() {
                     publishing.repositories.maven {
                         PluginLogUtil.printlnInfoInScreen(" ${it.name} url: ${it.url?.toString()}")
                     }
-                    PluginLogUtil.printlnInfoInScreen("mavenLocal  ${publishing.repositories.mavenLocal().url}")
+                    val fileNames = groupId.split(".")
+                    val pathSb = StringBuilder()
+                    pathSb.append(getPublishingExtensionRepositoriesPath(publishing))
+                    fileNames.forEach {
+                        pathSb.append(File.separator)
+                        pathSb.append(it)
+                    }
+                    pathSb.append(File.separator)
+                    pathSb.append(artifactId)
                     PluginLogUtil.printlnInfoInScreen("构建成功")
-                    PluginLogUtil.printlnInfoInScreen("仓库地址：  $url")
+                    PluginLogUtil.printlnInfoInScreen("仓库地址：  $pathSb")
                     PluginLogUtil.printlnInfoInScreen("===================================================================")
                     PluginLogUtil.printlnInfoInScreen("")
                     PluginLogUtil.printlnInfoInScreen("implementation '$groupId:$artifactId:$version'")
@@ -116,9 +125,11 @@ abstract class BasePublishTask : DefaultTask() {
     /**
      * 上报服务器进行版本检查,这里直接模拟返回成功
      * */
-    protected open fun checkPublishInfo(publishInfo:PublishInfo): Boolean {
+    protected open fun checkPublishInfo(publishInfo: PublishInfo): Boolean {
         return true
     }
+
+    abstract fun getPublishingExtensionRepositoriesPath(publishing: PublishingExtension): String
 
     /**
      * 上报服务器进行版本更新操作,这里直接模拟返回成功

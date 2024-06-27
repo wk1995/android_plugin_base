@@ -1,5 +1,7 @@
 package custom.android.plugin
 
+import org.gradle.api.publish.PublishingExtension
+
 
 open class PublishRemoteTask : BasePublishTask() {
 
@@ -25,5 +27,9 @@ open class PublishRemoteTask : BasePublishTask() {
             PluginLogUtil.printlnErrorInScreen("$publishInfo version not matches d.d.d")
         }
         return result
+    }
+
+    override fun getPublishingExtensionRepositoriesPath(publishing: PublishingExtension): String {
+        return publishing.repositories.mavenCentral().url.toString()
     }
 }

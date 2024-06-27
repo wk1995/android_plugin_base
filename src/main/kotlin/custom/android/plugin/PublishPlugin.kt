@@ -10,6 +10,9 @@ import org.gradle.jvm.tasks.Jar
 import java.net.URI
 import com.android.build.gradle.LibraryExtension
 
+/**
+ * 执行publishToMavenLocal
+ * */
 open class PublishPlugin : Plugin<Project> {
     companion object {
 

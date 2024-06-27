@@ -83,7 +83,7 @@ open class PublishPlugin : Plugin<Project> {
             if (currProjectName == currProject.displayName) {
                 println(" $currProjectName start register ")
                 project.tasks.register("PublishLocalMaven", PublishLocalTask::class.java)
-                project.tasks.register("PublishRemoteMaven", PublishTask::class.java)
+                project.tasks.register("PublishRemoteMaven", PublishRemoteTask::class.java)
             }
         }
     }

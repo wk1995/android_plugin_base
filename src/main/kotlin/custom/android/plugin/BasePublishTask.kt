@@ -31,9 +31,11 @@ abstract class BasePublishTask : DefaultTask() {
     }
 
     protected fun executeTask() {
+        val publishInfo = project.extensions.getByType(PublishInfo::class.java)
+
         //1、对publisher配置的信息进行基础校验
         //2、把publisher上传到服务器端，做版本重复性校验
-        checkStatus = requestCheckVersion()
+        checkStatus = checkPublishInfo(publishInfo)
         //如果前两步都校验通过了，checkStatus设置为true
 //        PluginLogUtil.printlnDebugInScreen("projectDir: ${project.projectDir.absolutePath}")
 //        PluginLogUtil.printlnDebugInScreen("rootDir: ${project.rootDir.absolutePath}")
@@ -114,7 +116,7 @@ abstract class BasePublishTask : DefaultTask() {
     /**
      * 上报服务器进行版本检查,这里直接模拟返回成功
      * */
-    private fun requestCheckVersion(): Boolean {
+    protected open fun checkPublishInfo(publishInfo:PublishInfo): Boolean {
         return true
     }
 

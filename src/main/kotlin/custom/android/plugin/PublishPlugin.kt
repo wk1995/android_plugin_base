@@ -54,9 +54,9 @@ open class PublishPlugin : Plugin<Project> {
                                         project.tasks.findByName(taskName) ?: project.tasks.create(
                                             taskName,
                                             Jar::class.java
-                                        ) {
-                                            it.from(sourceSetFiles)
-                                            it.archiveClassifier.set("sources")
+                                        ) {jar->
+                                            jar.from(sourceSetFiles)
+                                            jar.archiveClassifier.set("sources")
                                         }
                                     publication.artifact(task)
                                 }
@@ -71,6 +71,12 @@ open class PublishPlugin : Plugin<Project> {
                                 mavenArtifactRepository.credentials { credentials ->
                                     credentials.username = "Entertech"
                                     credentials.password = "bestes-7koTma-bordyn"
+                                    //4v0XAb0C:V4CC8CqBqY/9IrnRji+YTkOuzEnyNzeLzGucCC+ZcZwf
+                                    /*<server>
+                                    <id>${server}</id>
+                                    <username>4v0XAb0C</username>
+                                    <password>V4CC8CqBqY/9IrnRji+YTkOuzEnyNzeLzGucCC+ZcZwf</password>
+                                    </server>*/
                                 }
                             }
                         }

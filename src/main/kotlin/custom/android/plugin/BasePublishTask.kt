@@ -48,7 +48,20 @@ abstract class BasePublishTask : DefaultTask() {
 
         if (checkStatus) {
             val out = ByteArrayOutputStream()
-            val path = "${project.rootDir}${File.separator}gradlew"
+            val osName = System.getProperty("os.name")
+            val gradlewFileName = if (osName.contains("Windows")) {
+                // Windows 系统
+                "gradlew.bat"
+            } else if (osName.contains("Mac")) {
+                // macOS 系统
+                "gradlew.bat"
+            } else if (osName.contains("Linux")) {
+                // Linux 系统
+                "gradlew.bat"
+            } else {
+                ""
+            }
+            val path = "${project.rootDir}${File.separator}${gradlewFileName}"
             PluginLogUtil.printlnDebugInScreen("$TAG path: $path realTaskName: $realTaskName")
             //通过命令行的方式进行调用上传maven的task
             project.exec { exec ->

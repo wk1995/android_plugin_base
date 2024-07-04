@@ -9,7 +9,7 @@ dependencies {
     //groovy sdk
     implementation localGroovy()
     implementation "com.android.tools.build:gradle:4.2.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
 }
 
 
@@ -42,8 +42,8 @@ publishing {
             //nexus账号密码在local.properties文件中配置
             Properties properties = new Properties()// local.properties file in the root director
             properties.load(project.rootProject.file('local.properties').newDataInputStream())
-            def userName = properties.getProperty("ossrhUsername")
-            def passWord = properties.getProperty("ossrhPassword")
+            def userName = "Entertech"
+            def passWord = "bestes-7koTma-bordyn"
             //允许使用 http
             setAllowInsecureProtocol(true)
             setUrl("https://s01.oss.sonatype.org/content/repositories/releases/")

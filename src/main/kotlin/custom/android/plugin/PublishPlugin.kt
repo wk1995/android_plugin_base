@@ -54,7 +54,7 @@ open class PublishPlugin : Plugin<Project> {
                                         project.tasks.findByName(taskName) ?: project.tasks.create(
                                             taskName,
                                             Jar::class.java
-                                        ) {jar->
+                                        ) { jar ->
                                             jar.from(sourceSetFiles)
                                             jar.archiveClassifier.set("sources")
                                         }
@@ -91,8 +91,14 @@ open class PublishPlugin : Plugin<Project> {
         project.gradle.afterProject { currProject ->
             if (currProjectName == currProject.displayName) {
                 println(" $currProjectName start register ")
-                project.tasks.register("PublishLocalMaven", PublishLocalTask::class.java)
-                project.tasks.register("PublishRemoteMaven", PublishRemoteTask::class.java)
+                project.tasks.register(
+                    PublishLibraryLocalTask.TAG,
+                    PublishLibraryLocalTask::class.java
+                )
+                project.tasks.register(
+                    PublishLibraryRemoteTask.TAG,
+                    PublishLibraryRemoteTask::class.java
+                )
             }
         }
     }

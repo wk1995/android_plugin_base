@@ -6,10 +6,10 @@ import org.gradle.api.publish.PublishingExtension
 /**
  * 如果不写成open，会报找不到这个类的错误
  * */
-open class PublishLocalTask : BasePublishTask() {
+open class PublishLibraryLocalTask : BasePublishTask() {
 
     companion object {
-        private const val TAG = "PublishLocalTask"
+        const val TAG = "PublishLibraryLocalTask"
     }
 
     override fun initPublishCommandLine() = ":publishToMavenLocal"

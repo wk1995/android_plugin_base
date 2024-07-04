@@ -3,10 +3,10 @@ package custom.android.plugin
 import org.gradle.api.publish.PublishingExtension
 
 
-open class PublishRemoteTask : BasePublishTask() {
+open class PublishLibraryRemoteTask : BasePublishTask() {
 
     companion object {
-        private const val TAG = "PublishTask"
+        const val TAG = "PublishLibraryRemoteTask"
     }
 
 

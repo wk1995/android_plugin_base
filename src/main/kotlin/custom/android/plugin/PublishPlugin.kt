@@ -1,16 +1,17 @@
 package custom.android.plugin
 
+import com.android.build.gradle.LibraryExtension
 import custom.android.plugin.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
-import org.gradle.jvm.tasks.Jar
-import java.net.URI
-import com.android.build.gradle.LibraryExtension
-import org.gradle.api.plugins.PluginContainer
 import org.gradle.api.tasks.TaskContainer
+import org.gradle.jvm.tasks.Jar
+import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
+import java.net.URI
 
 /**
  * 执行publishToMavenLocal
@@ -36,19 +37,66 @@ open class PublishPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         // 应用Gradle官方的Maven插件
+
         val container = project.plugins
+        if (supportAppModule(container)) {
+            PluginLogUtil.printlnDebugInScreen("$TAG is app")
+            return
+        }
+        container.apply(MavenPublishPlugin::class.java)
+        project.extensions.create(
+            PublishInfo.EXTENSION_PUBLISH_INFO_NAME, PublishInfo::class.java,
+        )
+        if (supportPluginModule(container)) {
+            PluginLogUtil.printlnDebugInScreen("$TAG is PluginModule")
+            project.afterEvaluate { currentProject ->
+                try {
+                    val publishInfo = project.extensions.getByType(PublishInfo::class.java)
+                    val publishing = project.extensions.getByType(PublishingExtension::class.java)
+                    val gradlePluginDevelopmentExtension =
+                        project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
+                    val components = currentProject.components
+                    components.forEach {
+                        PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
+                        if (it.name == "java") {
+                            gradlePluginDevelopmentExtension.plugins { namedDomainObjectContainer ->
+                                namedDomainObjectContainer.create("gradlePluginCreate") { pluginDeclaration ->
+                                    // 插件ID
+                                    pluginDeclaration.id = publishInfo.pluginId
+                                    // 插件的实现类
+                                    pluginDeclaration.implementationClass =
+                                        publishInfo.implementationClass
+                                }
+                            }
+
+                            publishing.publications { publications ->
+                                publications.create(
+                                    MAVEN_PUBLICATION_NAME,
+                                    MavenPublication::class.java
+                                ) { publication ->
+                                    publication.groupId = publishInfo.groupId
+                                    publication.artifactId = publishInfo.artifactId
+                                    publication.version = publishInfo.version
+                                    publication.from(it)
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    PluginLogUtil.printlnErrorInScreen("$TAG PluginModule error ${e.message}")
+                }
+            }
+        }
+
         if (supportLibraryModule(container)) {
-            project.plugins.apply(MavenPublishPlugin::class.java)
-            project.extensions.create(
-                PublishInfo.EXTENSION_PUBLISH_INFO_NAME, PublishInfo::class.java,
-            )
+            PluginLogUtil.printlnDebugInScreen("$TAG is library")
             project.afterEvaluate { currentProject ->
                 try {
                     val publishInfo = project.extensions.getByType(PublishInfo::class.java)
                     val publishing = project.extensions.getByType(PublishingExtension::class.java)
                     val components = currentProject.components
                     components.forEach {
-                        println("$TAG name: ${it.name}")
+                        PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
                         if (it.name == "release") {
                             publishing.publications { publications ->
                                 //注册上传task
@@ -101,26 +149,23 @@ open class PublishPlugin : Plugin<Project> {
                 }
 
             }
-            val currProjectName = project.displayName
-            project.gradle.afterProject { currProject ->
-                if (currProjectName == currProject.displayName) {
-                    println(" $currProjectName start register ")
-                    project.tasks.register(
-                        PublishLibraryLocalTask.TAG,
-                        PublishLibraryLocalTask::class.java
-                    )
-                    project.tasks.register(
-                        PublishLibraryRemoteTask.TAG,
-                        PublishLibraryRemoteTask::class.java
-                    )
-                }
+
+        }
+        val currProjectName = project.displayName
+        project.gradle.afterProject { currProject ->
+            if (currProjectName == currProject.displayName) {
+                println(" $currProjectName start register ")
+                project.tasks.register(
+                    PublishLibraryLocalTask.TAG,
+                    PublishLibraryLocalTask::class.java
+                )
+                project.tasks.register(
+                    PublishLibraryRemoteTask.TAG,
+                    PublishLibraryRemoteTask::class.java
+                )
             }
         }
 
-
-        if (supportPluginModule(container)) {
-
-        }
     }
 
     private fun registerTask(container: TaskContainer, task: BasePublishTask) {

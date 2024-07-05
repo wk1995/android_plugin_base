@@ -32,4 +32,6 @@ open class PublishLibraryRemoteTask : BasePublishTask() {
     override fun getPublishingExtensionRepositoriesPath(publishing: PublishingExtension): String {
         return publishing.repositories.mavenCentral().url.toString()
     }
+
+    override fun fetchTaskName(): String = TAG
 }

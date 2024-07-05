@@ -17,4 +17,6 @@ open class PublishLibraryLocalTask : BasePublishTask() {
     override fun getPublishingExtensionRepositoriesPath(publishing: PublishingExtension): String {
         return publishing.repositories.mavenLocal().url.toString()
     }
+
+    override fun fetchTaskName(): String = TAG
 }

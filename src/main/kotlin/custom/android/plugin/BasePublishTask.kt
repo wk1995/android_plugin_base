@@ -49,12 +49,13 @@ abstract class BasePublishTask : DefaultTask() {
         if (checkStatus) {
             val out = ByteArrayOutputStream()
             val osName = System.getProperty("os.name")
+            PluginLogUtil.printlnInfoInScreen("current System is :$osName")
             val gradlewFileName = if (osName.contains("Windows")) {
                 // Windows 系统
                 "gradlew.bat"
             } else if (osName.contains("Mac")) {
                 // macOS 系统
-                "gradlew.bat"
+                "gradlew"
             } else if (osName.contains("Linux")) {
                 // Linux 系统
                 "gradlew.bat"
@@ -150,4 +151,6 @@ abstract class BasePublishTask : DefaultTask() {
     private fun requestUploadVersion(): Boolean {
         return true
     }
+
+    abstract fun fetchTaskName():String
 }

@@ -15,6 +15,21 @@ open class PublishInfo {
         this.version = version
     }
 
+    constructor(
+        groupId: String,
+        artifactId: String,
+        version: String,
+        pluginId: String,
+        implementationClass: String
+    ) {
+        this.groupId = groupId
+        this.artifactId = artifactId
+        this.version = version
+        this.pluginId = pluginId
+        this.implementationClass = implementationClass
+    }
+
+
     /**
      * 包名
      */
@@ -29,5 +44,9 @@ open class PublishInfo {
      * 版本号
      */
     var version = ""
+
+    var pluginId = ""
+
+    var implementationClass = ""
 
 }

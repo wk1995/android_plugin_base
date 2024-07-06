@@ -55,12 +55,10 @@ open class PublishPlugin : Plugin<Project> {
                 val gradlePluginDevelopmentExtension =
                     project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
                 val components = currentProject.components
-                var softwareComponent: SoftwareComponent?=null
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
                     if (supportPluginModule(container)) {
                         if (it.name == "java") {
-                            softwareComponent=it
                             gradlePluginDevelopmentExtension.plugins { namedDomainObjectContainer ->
                                 namedDomainObjectContainer.create("gradlePluginCreate") { pluginDeclaration ->
                                     // 插件ID
@@ -70,106 +68,13 @@ open class PublishPlugin : Plugin<Project> {
                                         publishInfo.implementationClass
                                 }
                             }
-                            //注册上传task
-                            publishing.publications { publications ->
-                                publications.create(
-                                    MAVEN_PUBLICATION_NAME,
-                                    MavenPublication::class.java
-                                ) { publication ->
-                                    publication.groupId = publishInfo.groupId
-                                    publication.artifactId = publishInfo.artifactId
-                                    publication.version = publishInfo.version
-                                    if (publication.version.endsWith("-debug")) {
-                                        val taskName = "androidSourcesJar"
-                                        //获取build.gradle中的android节点
-                                        val androidSet =
-                                            project.extensions.getByName("android") as LibraryExtension
-                                        val sourceSet = androidSet.sourceSets
-                                        //获取android节点下的源码目录
-                                        val sourceSetFiles =
-                                            sourceSet.findByName("main")?.java?.srcDirs
-                                        val task =
-                                            project.tasks.findByName(taskName)
-                                                ?: project.tasks.create(
-                                                    taskName,
-                                                    Jar::class.java
-                                                ) { jar ->
-                                                    jar.from(sourceSetFiles)
-                                                    jar.archiveClassifier.set("sources")
-                                                }
-                                        publication.artifact(task)
-                                    }
-                                    publication.from(it)
-                                }
-                            }
-                            val publishUrl = publishInfo.publishUrl
-                            if (publishUrl.isNotEmpty()) {
-                                publishing.repositories { artifactRepositories ->
-                                    artifactRepositories.maven { mavenArtifactRepository ->
-                                        mavenArtifactRepository.url =
-                                            URI(publishInfo.publishUrl)
-                                        mavenArtifactRepository.credentials { credentials ->
-                                            credentials.username = publishInfo.publishUserName
-                                            credentials.password =
-                                                publishInfo.publishPassword
-                                        }
-                                    }
-                                }
-                            } else {
-                                PluginLogUtil.printlnErrorInScreen("$TAG publishUrl is null")
-                            }
+                            publishing(project, publishing, publishInfo, it)
                         }
                     }
                     if (supportLibraryModule(container)) {
                         if (it.name == "release") {
                             //注册上传task
-                            publishing.publications { publications ->
-                                publications.create(
-                                    MAVEN_PUBLICATION_NAME,
-                                    MavenPublication::class.java
-                                ) { publication ->
-                                    publication.groupId = publishInfo.groupId
-                                    publication.artifactId = publishInfo.artifactId
-                                    publication.version = publishInfo.version
-                                    if (publication.version.endsWith("-debug")) {
-                                        val taskName = "androidSourcesJar"
-                                        //获取build.gradle中的android节点
-                                        val androidSet =
-                                            project.extensions.getByName("android") as LibraryExtension
-                                        val sourceSet = androidSet.sourceSets
-                                        //获取android节点下的源码目录
-                                        val sourceSetFiles =
-                                            sourceSet.findByName("main")?.java?.srcDirs
-                                        val task =
-                                            project.tasks.findByName(taskName)
-                                                ?: project.tasks.create(
-                                                    taskName,
-                                                    Jar::class.java
-                                                ) { jar ->
-                                                    jar.from(sourceSetFiles)
-                                                    jar.archiveClassifier.set("sources")
-                                                }
-                                        publication.artifact(task)
-                                    }
-                                    publication.from(it)
-                                }
-                            }
-                            val publishUrl = publishInfo.publishUrl
-                            if (publishUrl.isNotEmpty()) {
-                                publishing.repositories { artifactRepositories ->
-                                    artifactRepositories.maven { mavenArtifactRepository ->
-                                        mavenArtifactRepository.url =
-                                            URI(publishInfo.publishUrl)
-                                        mavenArtifactRepository.credentials { credentials ->
-                                            credentials.username = publishInfo.publishUserName
-                                            credentials.password =
-                                                publishInfo.publishPassword
-                                        }
-                                    }
-                                }
-                            } else {
-                                PluginLogUtil.printlnErrorInScreen("$TAG publishUrl is null")
-                            }
+                            publishing(project, publishing, publishInfo, it)
                         }
                     }
                 }
@@ -177,7 +82,6 @@ open class PublishPlugin : Plugin<Project> {
             } catch (e: Exception) {
                 PluginLogUtil.printlnErrorInScreen("$TAG PluginModule error ${e.message}")
             }
-
 
 
         }
@@ -204,6 +108,61 @@ open class PublishPlugin : Plugin<Project> {
             task.fetchTaskName(),
             task::class.java
         )
+    }
+
+    private fun publishing(
+        project: Project,
+        publishing: PublishingExtension,
+        publishInfo: PublishInfo,
+        softwareComponent: SoftwareComponent
+    ) {
+        publishing.publications { publications ->
+            publications.create(
+                MAVEN_PUBLICATION_NAME,
+                MavenPublication::class.java
+            ) { publication ->
+                publication.groupId = publishInfo.groupId
+                publication.artifactId = publishInfo.artifactId
+                publication.version = publishInfo.version
+                if (publication.version.endsWith("-debug")) {
+                    val taskName = "androidSourcesJar"
+                    //获取build.gradle中的android节点
+                    val androidSet =
+                        project.extensions.getByName("android") as LibraryExtension
+                    val sourceSet = androidSet.sourceSets
+                    //获取android节点下的源码目录
+                    val sourceSetFiles =
+                        sourceSet.findByName("main")?.java?.srcDirs
+                    val task =
+                        project.tasks.findByName(taskName)
+                            ?: project.tasks.create(
+                                taskName,
+                                Jar::class.java
+                            ) { jar ->
+                                jar.from(sourceSetFiles)
+                                jar.archiveClassifier.set("sources")
+                            }
+                    publication.artifact(task)
+                }
+                publication.from(softwareComponent)
+            }
+        }
+        val publishUrl = publishInfo.publishUrl
+        if (publishUrl.isNotEmpty()) {
+            publishing.repositories { artifactRepositories ->
+                artifactRepositories.maven { mavenArtifactRepository ->
+                    mavenArtifactRepository.url =
+                        URI(publishInfo.publishUrl)
+                    mavenArtifactRepository.credentials { credentials ->
+                        credentials.username = publishInfo.publishUserName
+                        credentials.password =
+                            publishInfo.publishPassword
+                    }
+                }
+            }
+        } else {
+            PluginLogUtil.printlnErrorInScreen("$TAG publishUrl is null")
+        }
     }
 
 }

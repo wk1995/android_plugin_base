@@ -10,7 +10,7 @@ object PluginLogUtil {
     /**
      * 打印到屏幕上
      * */
-    fun printlnInScreen(msg: String, colorString: String) {
+    private fun printlnInScreen(msg: String, colorString: String) {
         val segments = msg.chunked(maxLineLength)
         segments.forEach { segment ->
             println("$colorString$segment")

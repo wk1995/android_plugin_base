@@ -18,7 +18,7 @@ object PluginLogUtil {
     }
 
     fun printlnDebugInScreen(msg: String) {
-        printlnInScreen(msg, "")
+        printlnInScreen(msg, resetColor)
     }
 
 

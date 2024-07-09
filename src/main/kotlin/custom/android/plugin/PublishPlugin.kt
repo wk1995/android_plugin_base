@@ -52,13 +52,13 @@ open class PublishPlugin : Plugin<Project> {
             try {
                 val publishInfo = project.extensions.getByType(PublishInfo::class.java)
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
-                val gradlePluginDevelopmentExtension =
-                    project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
                 val components = currentProject.components
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
                     if (supportPluginModule(container)) {
                         if (it.name == "java") {
+                            val gradlePluginDevelopmentExtension =
+                                project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
                             gradlePluginDevelopmentExtension.plugins { namedDomainObjectContainer ->
                                 namedDomainObjectContainer.create("gradlePluginCreate") { pluginDeclaration ->
                                     // 插件ID

@@ -3,7 +3,6 @@ package custom.android.plugin.push
 import com.android.build.gradle.LibraryExtension
 import custom.android.plugin.log.PluginLogUtil
 import custom.android.plugin.push.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
-import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.plugins.PluginContainer
@@ -18,11 +17,8 @@ import java.net.URI
 /**
  * 执行publishToMavenLocal
  * */
-open class PublishPlugin : Plugin<Project> {
-    companion object {
-
-        private const val TAG = "PublishPlugin"
-    }
+object PublishOperate {
+    private const val TAG = "PublishOperate"
 
     private fun supportAppModule(container: PluginContainer): Boolean {
         return container.hasPlugin("com.android.application")
@@ -37,21 +33,16 @@ open class PublishPlugin : Plugin<Project> {
         container.hasPlugin("com.android.library")
 
 
-    override fun apply(project: Project) {
+    fun apply(project: Project,publishInfo :PublishInfoExtension) {
         // 应用Gradle官方的Maven插件
-
         val container = project.plugins
         if (supportAppModule(container)) {
             PluginLogUtil.printlnDebugInScreen("$TAG is app")
             return
         }
         container.apply(MavenPublishPlugin::class.java)
-        project.extensions.create(
-            PublishInfoExtension.EXTENSION_PUBLISH_INFO_NAME, PublishInfoExtension::class.java,
-        )
         project.afterEvaluate {
             try {
-                val publishInfo = project.extensions.getByType(PublishInfoExtension::class.java)
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")

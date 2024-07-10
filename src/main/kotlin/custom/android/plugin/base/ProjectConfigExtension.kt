@@ -8,7 +8,7 @@ import org.gradle.api.JavaVersion
 /**
  * 项目编译配置与AppId配置
  * */
-class ProjectConfigExtension() {
+open class ProjectConfigExtension() {
 
     companion object {
         private const val MIN_SDK_VERSION = 23

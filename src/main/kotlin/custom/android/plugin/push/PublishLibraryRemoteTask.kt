@@ -15,7 +15,7 @@ open class PublishLibraryRemoteTask : BasePublishTask() {
         ":publish${MAVEN_PUBLICATION_NAME}PublicationToMavenRepository"
 
 
-    override fun checkPublishInfo(publishInfo: PublishInfo): Boolean {
+    override fun checkPublishInfo(publishInfo: PublishInfoExtension): Boolean {
         val version = publishInfo.version
         // 正则表达式解释：
         // \d+ 表示一个或多个数字（即非负整数）

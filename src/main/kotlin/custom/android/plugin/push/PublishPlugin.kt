@@ -47,11 +47,11 @@ open class PublishPlugin : Plugin<Project> {
         }
         container.apply(MavenPublishPlugin::class.java)
         project.extensions.create(
-            PublishInfo.EXTENSION_PUBLISH_INFO_NAME, PublishInfo::class.java,
+            PublishInfoExtension.EXTENSION_PUBLISH_INFO_NAME, PublishInfoExtension::class.java,
         )
         project.afterEvaluate {
             try {
-                val publishInfo = project.extensions.getByType(PublishInfo::class.java)
+                val publishInfo = project.extensions.getByType(PublishInfoExtension::class.java)
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
@@ -113,7 +113,7 @@ open class PublishPlugin : Plugin<Project> {
     private fun publishing(
         project: Project,
         publishing: PublishingExtension,
-        publishInfo: PublishInfo,
+        publishInfo: PublishInfoExtension,
         softwareComponent: SoftwareComponent
     ) {
         publishing.publications {

@@ -35,10 +35,10 @@ open class DefaultGradlePlugin : Plugin<Project> {
             plugin("org.jetbrains.kotlin.android")
         }
         val projectConfigInfo = try {
-            project.extensions.getByType(ProjectConfigInfo::class.java)
+            project.extensions.getByType(ProjectConfigExtension::class.java)
         } catch (e: Exception) {
             PluginLogUtil.printlnErrorInScreen("getByType ProjectConfigInfo error ${e.message}")
-            ProjectConfigInfo()
+            ProjectConfigExtension()
         }
         PluginLogUtil.printlnDebugInScreen("projectConfigInfo: $projectConfigInfo")
         project.extensions.getByType<BaseAppModuleExtension>(BaseAppModuleExtension::class.java).apply {
@@ -96,9 +96,9 @@ open class DefaultGradlePlugin : Plugin<Project> {
             plugin("org.jetbrains.kotlin.android")
         }
         val projectConfigInfo = try {
-            project.extensions.getByType(ProjectConfigInfo::class.java)
+            project.extensions.getByType(ProjectConfigExtension::class.java)
         } catch (e: Exception) {
-            ProjectConfigInfo()
+            ProjectConfigExtension()
         }
         project.extensions.getByType(LibraryExtension::class.java).apply {
             compileSdk = projectConfigInfo.compileSdk

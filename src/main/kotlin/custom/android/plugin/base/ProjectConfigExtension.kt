@@ -1,5 +1,7 @@
 package custom.android.plugin.base
 
+import custom.android.plugin.push.PublishInfoExtension
+import org.gradle.api.Action
 import org.gradle.api.JavaVersion
 
 
@@ -30,6 +32,7 @@ class ProjectConfigExtension() {
     var namespace = NAME_SPACE
     var testInstrumentationRunner = TEST_INSTRUMENTATION_RUNNER
     var javeVersion: JavaVersion = DEFAULT_JAVA_VERSION
+    var publishInfo: PublishInfoExtension? = null
 
     constructor(
         minSk: Int = MIN_SDK_VERSION,
@@ -40,7 +43,8 @@ class ProjectConfigExtension() {
         applicationId: String = APPLICATION_ID,
         namespace: String = NAME_SPACE,
         testInstrumentationRunner: String = TEST_INSTRUMENTATION_RUNNER,
-        javeVersion: JavaVersion = DEFAULT_JAVA_VERSION
+        javeVersion: JavaVersion = DEFAULT_JAVA_VERSION,
+        publishInfo: Action<PublishInfoExtension> = Action<PublishInfoExtension> { }
     ) : this() {
         this.minSk = minSk
         this.compileSdk = compileSdk
@@ -51,6 +55,10 @@ class ProjectConfigExtension() {
         this.namespace = namespace
         this.testInstrumentationRunner = testInstrumentationRunner
         this.javeVersion = javeVersion
+        this.publishInfo?.apply {
+            publishInfo.execute(this)
+        }
+
     }
 
 
@@ -63,6 +71,15 @@ class ProjectConfigExtension() {
             else -> {
                 "1.8"
             }
+        }
+    }
+
+    fun publishInfo(action: Action<PublishInfoExtension>) {
+        if (publishInfo == null) {
+            publishInfo = PublishInfoExtension()
+        }
+        publishInfo?.apply {
+            action.execute(this)
         }
     }
 

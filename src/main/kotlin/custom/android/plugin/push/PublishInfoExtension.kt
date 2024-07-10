@@ -1,15 +1,12 @@
 package custom.android.plugin.push
 
-open class PublishInfoExtension {
-
+open class PublishInfoExtension() {
 
     companion object {
         const val EXTENSION_PUBLISH_INFO_NAME = "PublishInfo"
     }
 
-    constructor()
-
-    constructor(groupId: String, artifactId: String, version: String) {
+    constructor(groupId: String, artifactId: String, version: String):this() {
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = version
@@ -21,7 +18,7 @@ open class PublishInfoExtension {
         version: String,
         pluginId: String,
         implementationClass: String
-    ) {
+    ):this() {
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = version

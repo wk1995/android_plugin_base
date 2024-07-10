@@ -20,7 +20,7 @@ gradlePlugin{
             // 插件ID
             id = 'custom.android.plugin'
             // 插件的实现类
-            implementationClass = 'custom.android.plugin.PublishPlugin'
+            implementationClass = 'custom.android.plugin.push.PublishPlugin'
         }
     }
 

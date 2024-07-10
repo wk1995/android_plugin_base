@@ -1,6 +1,4 @@
-package custom.android.plugin
-
-import java.awt.Color
+package custom.android.plugin.push
 
 object PluginLogUtil {
     private const val DEFAULT_COLOR_ERROR = "\u001B[31m"

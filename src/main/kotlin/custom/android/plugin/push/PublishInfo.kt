@@ -1,4 +1,4 @@
-package custom.android.plugin
+package custom.android.plugin.push
 
 open class PublishInfo {
 

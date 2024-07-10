@@ -1,4 +1,4 @@
-package custom.android.plugin
+package custom.android.plugin.push
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension

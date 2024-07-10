@@ -1,7 +1,7 @@
-package custom.android.plugin
+package custom.android.plugin.push
 
 import com.android.build.gradle.LibraryExtension
-import custom.android.plugin.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
+import custom.android.plugin.push.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.component.SoftwareComponent

@@ -1,6 +1,7 @@
 package custom.android.plugin.push
 
 import com.android.build.gradle.LibraryExtension
+import custom.android.plugin.log.PluginLogUtil
 import custom.android.plugin.push.BasePublishTask.Companion.MAVEN_PUBLICATION_NAME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -48,23 +49,22 @@ open class PublishPlugin : Plugin<Project> {
         project.extensions.create(
             PublishInfo.EXTENSION_PUBLISH_INFO_NAME, PublishInfo::class.java,
         )
-        project.afterEvaluate { currentProject ->
+        project.afterEvaluate {
             try {
                 val publishInfo = project.extensions.getByType(PublishInfo::class.java)
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
-                val components = currentProject.components
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
                     if (supportPluginModule(container)) {
                         if (it.name == "java") {
                             val gradlePluginDevelopmentExtension =
                                 project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
-                            gradlePluginDevelopmentExtension.plugins { namedDomainObjectContainer ->
-                                namedDomainObjectContainer.create("gradlePluginCreate") { pluginDeclaration ->
+                            gradlePluginDevelopmentExtension.plugins {
+                               create("gradlePluginCreate") {
                                     // 插件ID
-                                    pluginDeclaration.id = publishInfo.pluginId
+                                    id = publishInfo.pluginId
                                     // 插件的实现类
-                                    pluginDeclaration.implementationClass =
+                                    implementationClass =
                                         publishInfo.implementationClass
                                 }
                             }
@@ -87,9 +87,9 @@ open class PublishPlugin : Plugin<Project> {
         }
         val currProjectName = project.displayName
         PluginLogUtil.printlnDebugInScreen("$TAG currProjectName $currProjectName")
-        project.gradle.afterProject { currProject ->
-            PluginLogUtil.printlnDebugInScreen("$TAG currProject.displayName ${currProject.displayName}")
-            if (currProjectName == currProject.displayName) {
+        project.gradle.afterProject {
+            PluginLogUtil.printlnDebugInScreen("$TAG currProject.displayName ${displayName}")
+            if (currProjectName == displayName) {
                 PluginLogUtil.printlnDebugInScreen("$TAG $currProjectName start register ")
                 project.tasks.register(
                     PublishLibraryLocalTask.TAG,
@@ -116,15 +116,15 @@ open class PublishPlugin : Plugin<Project> {
         publishInfo: PublishInfo,
         softwareComponent: SoftwareComponent
     ) {
-        publishing.publications { publications ->
-            publications.create(
+        publishing.publications {
+           create(
                 MAVEN_PUBLICATION_NAME,
                 MavenPublication::class.java
-            ) { publication ->
-                publication.groupId = publishInfo.groupId
-                publication.artifactId = publishInfo.artifactId
-                publication.version = publishInfo.version
-                if (publication.version.endsWith("-debug")) {
+            ) {
+                groupId = publishInfo.groupId
+              artifactId = publishInfo.artifactId
+                version = publishInfo.version
+                if (version.endsWith("-debug")) {
                     val taskName = "androidSourcesJar"
                     //获取build.gradle中的android节点
                     val androidSet =
@@ -138,24 +138,24 @@ open class PublishPlugin : Plugin<Project> {
                             ?: project.tasks.create(
                                 taskName,
                                 Jar::class.java
-                            ) { jar ->
-                                jar.from(sourceSetFiles)
-                                jar.archiveClassifier.set("sources")
+                            ) {
+                                from(sourceSetFiles)
+                                archiveClassifier.set("sources")
                             }
-                    publication.artifact(task)
+                    artifact(task)
                 }
-                publication.from(softwareComponent)
+                from(softwareComponent)
             }
         }
         val publishUrl = publishInfo.publishUrl
         if (publishUrl.isNotEmpty()) {
-            publishing.repositories { artifactRepositories ->
-                artifactRepositories.maven { mavenArtifactRepository ->
-                    mavenArtifactRepository.url =
+            publishing.repositories {
+               maven {
+                    url =
                         URI(publishInfo.publishUrl)
-                    mavenArtifactRepository.credentials { credentials ->
-                        credentials.username = publishInfo.publishUserName
-                        credentials.password =
+                    credentials {
+                        username = publishInfo.publishUserName
+                        password =
                             publishInfo.publishPassword
                     }
                 }

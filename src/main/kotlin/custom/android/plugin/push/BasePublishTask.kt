@@ -1,5 +1,6 @@
 package custom.android.plugin.push
 
+import custom.android.plugin.log.PluginLogUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -65,9 +66,9 @@ abstract class BasePublishTask : DefaultTask() {
             val path = "${project.rootDir}${File.separator}${gradlewFileName}"
             PluginLogUtil.printlnDebugInScreen("$TAG path: $path realTaskName: $realTaskName")
             //通过命令行的方式进行调用上传maven的task
-            project.exec { exec ->
-                exec.standardOutput = out
-                exec.setCommandLine(
+            project.exec {
+                this.standardOutput = out
+                this.setCommandLine(
                     path,
                     realTaskName
                 )
@@ -82,22 +83,22 @@ abstract class BasePublishTask : DefaultTask() {
                     var groupId = ""
                     var artifactId = ""
                     var version = ""
-                    publishing.publications { publications ->
+
+                    publishing.publications {
                         val mavenPublication =
-                            publications.getByName(MAVEN_PUBLICATION_NAME) as MavenPublication
+                            getByName(MAVEN_PUBLICATION_NAME) as MavenPublication
                         groupId = mavenPublication.groupId
                         artifactId = mavenPublication.artifactId
                         version = mavenPublication.version
-
                     }
-                    publishing.repositories { artifactRepositories ->
-                        artifactRepositories.maven {
+                    publishing.repositories {
+                        maven {
                             //url可能为null，虽然提示不会为null
-                            PluginLogUtil.printlnInfoInScreen("${it.name} url: ${it.url?.toString()}")
+                            PluginLogUtil.printlnInfoInScreen("$name url: ${url?.toString()}")
                         }
                     }
                     publishing.repositories.maven {
-                        PluginLogUtil.printlnInfoInScreen(" ${it.name} url: ${it.url?.toString()}")
+                        PluginLogUtil.printlnInfoInScreen(" ${name} url: ${url?.toString()}")
                     }
                     val fileNames = groupId.split(".")
                     val pathSb = StringBuilder()

@@ -11,16 +11,26 @@ import org.gradle.api.JavaVersion
 open class ProjectConfigExtension() {
 
     companion object {
-        private const val MIN_SDK_VERSION = 23
-        private const val COMPILE_SDK_VERSION = 34
-        private const val TARGET_SDK_VERSION = 34
-        private const val VERSION_CODE = 100
-        private const val VERSION_NAME = "1.0.0"
-        private const val APPLICATION_ID = "com.wk.plugin"
-        private const val NAME_SPACE = "com.wk.plugin"
-        private const val TEST_INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJunitRunner"
-        private val DEFAULT_JAVA_VERSION = JavaVersion.VERSION_17
+        const val MIN_SDK_VERSION = 23
+        const val COMPILE_SDK_VERSION = 34
+        const val TARGET_SDK_VERSION = 34
+        const val VERSION_CODE = 100
+        const val VERSION_NAME = "1.0.0"
+        const val APPLICATION_ID = "com.wk.plugin"
+        const val NAME_SPACE = "com.wk.plugin"
+        const val TEST_INSTRUMENTATION_RUNNER = "androidx.test.runner.AndroidJunitRunner"
+        val DEFAULT_JAVA_VERSION = JavaVersion.VERSION_17
+        fun getJavaTarget(javeVersion: JavaVersion): String {
+            return when (javeVersion) {
+                JavaVersion.VERSION_17 -> {
+                    "17"
+                }
 
+                else -> {
+                    "1.8"
+                }
+            }
+        }
     }
 
     var minSk = MIN_SDK_VERSION

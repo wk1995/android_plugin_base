@@ -33,7 +33,7 @@ object PublishOperate {
         container.hasPlugin("com.android.library")
 
 
-    fun apply(project: Project,publishInfo :PublishInfoExtension) {
+    fun apply(project: Project) {
         // 应用Gradle官方的Maven插件
         val container = project.plugins
         if (supportAppModule(container)) {
@@ -41,8 +41,12 @@ object PublishOperate {
             return
         }
         container.apply(MavenPublishPlugin::class.java)
+        project.extensions.create(
+            PublishInfoExtension.EXTENSION_PUBLISH_INFO_NAME, PublishInfoExtension::class.java,
+        )
         project.afterEvaluate {
             try {
+                val publishInfo = project.extensions.getByType(PublishInfoExtension::class.java)
                 val publishing = project.extensions.getByType(PublishingExtension::class.java)
                 components.forEach {
                     PluginLogUtil.printlnDebugInScreen("$TAG name: ${it.name}")
@@ -51,7 +55,7 @@ object PublishOperate {
                             val gradlePluginDevelopmentExtension =
                                 project.extensions.getByType(GradlePluginDevelopmentExtension::class.java)
                             gradlePluginDevelopmentExtension.plugins {
-                               create("gradlePluginCreate") {
+                                create("gradlePluginCreate") {
                                     // 插件ID
                                     id = publishInfo.pluginId
                                     // 插件的实现类
@@ -79,7 +83,7 @@ object PublishOperate {
         val currProjectName = project.displayName
         PluginLogUtil.printlnDebugInScreen("$TAG currProjectName $currProjectName")
         project.gradle.afterProject {
-            PluginLogUtil.printlnDebugInScreen("$TAG currProject.displayName ${displayName}")
+            PluginLogUtil.printlnDebugInScreen("$TAG currProject.displayName $displayName")
             if (currProjectName == displayName) {
                 PluginLogUtil.printlnDebugInScreen("$TAG $currProjectName start register ")
                 project.tasks.register(
@@ -108,12 +112,12 @@ object PublishOperate {
         softwareComponent: SoftwareComponent
     ) {
         publishing.publications {
-           create(
+            create(
                 MAVEN_PUBLICATION_NAME,
                 MavenPublication::class.java
             ) {
                 groupId = publishInfo.groupId
-              artifactId = publishInfo.artifactId
+                artifactId = publishInfo.artifactId
                 version = publishInfo.version
                 if (version.endsWith("-debug")) {
                     val taskName = "androidSourcesJar"
@@ -141,7 +145,7 @@ object PublishOperate {
         val publishUrl = publishInfo.publishUrl
         if (publishUrl.isNotEmpty()) {
             publishing.repositories {
-               maven {
+                maven {
                     url =
                         URI(publishInfo.publishUrl)
                     credentials {

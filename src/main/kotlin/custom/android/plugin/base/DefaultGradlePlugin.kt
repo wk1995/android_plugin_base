@@ -17,9 +17,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 open class DefaultGradlePlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        target.extensions.create(
-            "gradleConfig", ProjectConfigExtension::class.java,
-        )
+        PluginLogUtil.printlnDebugInScreen("DefaultGradlePlugin  apply")
         setProjectConfig(target)
     }
 
@@ -37,7 +35,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
 
     private fun setProjectConfig(project: Project) {
         if (supportAppModule(project.plugins)) {
-            //是app
+            PluginLogUtil.printlnDebugInScreen("this is app")
             setProjectConfigByApp(project)
         } else {
             //是 libraray
@@ -51,54 +49,46 @@ open class DefaultGradlePlugin : Plugin<Project> {
             plugin("kotlin-kapt")
             plugin("org.jetbrains.kotlin.android")
         }
-        val projectConfigInfo = try {
-            project.extensions.getByType(ProjectConfigExtension::class.java)
-        } catch (e: Exception) {
-            PluginLogUtil.printlnErrorInScreen("getByType ProjectConfigInfo error ${e.message}")
-            ProjectConfigExtension()
-        }
-        PluginLogUtil.printlnDebugInScreen("projectConfigInfo: $projectConfigInfo")
-        project.extensions.getByType<BaseAppModuleExtension>(BaseAppModuleExtension::class.java).apply {
-            compileSdk = projectConfigInfo.compileSdk
-            namespace = projectConfigInfo.namespace
-            defaultConfig {
-                applicationId = projectConfigInfo.applicationId
-                minSdk = projectConfigInfo.minSk
-                targetSdk = projectConfigInfo.targetSdk
-                versionCode = projectConfigInfo.versionCode
-                versionName = projectConfigInfo.versionName
-                testInstrumentationRunner = projectConfigInfo.testInstrumentationRunner
-            }
-            compileOptions {
-                sourceCompatibility = projectConfigInfo.javeVersion
-                targetCompatibility = projectConfigInfo.javeVersion
-            }
-            //kotlinOptions
-            (this as? ExtensionAware)?.extensions?.configure<KotlinJvmOptions>(
-                "kotlinOptions"
-            ) {
-                jvmTarget = projectConfigInfo.getJavaTarget()
-            }
-            buildTypes {
-                release {
-                    isDebuggable = false
-                    isMinifyEnabled = true
-                    isShrinkResources = true
-                    isJniDebuggable = false
-                    proguardFiles(
-                        getDefaultProguardFile("proguard-android-optimize.txt"),
-                        "proguard-rules.pro"
-                    )
-                }
-                debug {
-                    isDebuggable = true
-                    isMinifyEnabled = false
-                    isShrinkResources = false
-                    isJniDebuggable = true
-                }
 
+        project.extensions.getByType<BaseAppModuleExtension>(BaseAppModuleExtension::class.java)
+            .apply {
+                compileSdk = ProjectConfigExtension.COMPILE_SDK_VERSION
+                defaultConfig {
+                    minSdk = ProjectConfigExtension.MIN_SDK_VERSION
+                    targetSdk = ProjectConfigExtension.TARGET_SDK_VERSION
+                    testInstrumentationRunner = ProjectConfigExtension.TEST_INSTRUMENTATION_RUNNER
+                }
+                val javaVersion = ProjectConfigExtension.DEFAULT_JAVA_VERSION
+                compileOptions {
+                    sourceCompatibility = javaVersion
+                    targetCompatibility = javaVersion
+                }
+                //kotlinOptions
+                (this as? ExtensionAware)?.extensions?.configure<KotlinJvmOptions>(
+                    "kotlinOptions"
+                ) {
+                    jvmTarget = ProjectConfigExtension.getJavaTarget(javaVersion)
+                }
+                buildTypes {
+                    release {
+                        isDebuggable = false
+                        isMinifyEnabled = true
+                        isShrinkResources = true
+                        isJniDebuggable = false
+                        proguardFiles(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            "proguard-rules.pro"
+                        )
+                    }
+                    debug {
+                        isDebuggable = true
+                        isMinifyEnabled = false
+                        isShrinkResources = false
+                        isJniDebuggable = true
+                    }
+
+                }
             }
-        }
         project.dependencies {
             initDependencies()
             affectiveSdk()
@@ -106,34 +96,33 @@ open class DefaultGradlePlugin : Plugin<Project> {
     }
 
 
-    private fun setProjectConfigByLibrary(project: Project) {
-        val projectConfigInfo = try {
-            project.extensions.getByType(ProjectConfigExtension::class.java)
-        } catch (e: Exception) {
-            ProjectConfigExtension()
-        }
+    private fun setProjectConfigByLibrary(
+        project: Project,
+    ) {
         if (supportLibraryModule(project.plugins)) {
+            PluginLogUtil.printlnDebugInScreen("is library")
             project.apply {
                 plugin("kotlin-android")
                 plugin("kotlin-kapt")
                 plugin("org.jetbrains.kotlin.android")
             }
             project.extensions.getByType(LibraryExtension::class.java).apply {
-                compileSdk = projectConfigInfo.compileSdk
+                compileSdk = ProjectConfigExtension.COMPILE_SDK_VERSION
                 defaultConfig {
-                    minSdk = projectConfigInfo.minSk
-                    testInstrumentationRunner = projectConfigInfo.testInstrumentationRunner
+                    minSdk = ProjectConfigExtension.MIN_SDK_VERSION
+                    testInstrumentationRunner = ProjectConfigExtension.TEST_INSTRUMENTATION_RUNNER
 
                 }
+                val javaVersion = ProjectConfigExtension.DEFAULT_JAVA_VERSION
                 compileOptions {
-                    sourceCompatibility = projectConfigInfo.javeVersion
-                    targetCompatibility = projectConfigInfo.javeVersion
+                    sourceCompatibility = javaVersion
+                    targetCompatibility = javaVersion
                 }
                 //kotlinOptions
                 (this as? ExtensionAware)?.extensions?.configure<KotlinJvmOptions>(
                     "kotlinOptions"
                 ) {
-                    jvmTarget = projectConfigInfo.getJavaTarget()
+                    jvmTarget = ProjectConfigExtension.getJavaTarget(javaVersion)
                 }
             }
             project.dependencies {
@@ -142,6 +131,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
         }
 
         if (supportPluginModule(project.plugins)) {
+            PluginLogUtil.printlnDebugInScreen("is plugin")
             project.dependencies {
                 //gradle sdk
                 this.add(DependencyType.DEPENDENCY_TYPE_IMPLEMENTATION, gradleApi())
@@ -149,9 +139,7 @@ open class DefaultGradlePlugin : Plugin<Project> {
                 this.add(DependencyType.DEPENDENCY_TYPE_IMPLEMENTATION, localGroovy())
             }
         }
-        projectConfigInfo.publishInfo?.apply {
-            PublishOperate.apply(project, this)
-        }
+        PublishOperate.apply(project)
 
     }
 

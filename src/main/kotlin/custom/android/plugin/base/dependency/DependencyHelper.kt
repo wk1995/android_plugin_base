@@ -1,6 +1,8 @@
 package custom.android.plugin.base.dependency
 
 import custom.android.plugin.base.dependency.DependencyType.DEPENDENCY_TYPE_IMPLEMENTATION
+import custom.android.plugin.base.dependency.DependencyType.DEPENDENCY_TYPE_KAPT
+import custom.android.plugin.base.dependency.DependencyType.DEPENDENCY_TYPE_TEST_IMPLEMENTATION
 import org.gradle.api.Action
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
@@ -46,11 +48,9 @@ fun DependencyHandler.initDependencies() {
 
 fun DependencyHandler.databaseRoom(exclude: Map<String, Action<ExternalModuleDependency>> = emptyMap()) {
     listOf(
-        DependencyItem.database_room_compiler,
         DependencyItem.database_room_runtime,
         DependencyItem.database_room_ktx,
         DependencyItem.database_room_guava,
-        DependencyItem.database_room_test,
         DependencyItem.database_room_paging,
     ).forEach {
         val action = exclude[it] ?: Action<ExternalModuleDependency> {}
@@ -58,5 +58,7 @@ fun DependencyHandler.databaseRoom(exclude: Map<String, Action<ExternalModuleDep
             this@databaseRoom, DEPENDENCY_TYPE_IMPLEMENTATION, it, action
         )
     }
+    add(DEPENDENCY_TYPE_KAPT, DependencyItem.database_room_compiler)
+    add(DEPENDENCY_TYPE_TEST_IMPLEMENTATION, DependencyItem.database_room_test)
 }
 

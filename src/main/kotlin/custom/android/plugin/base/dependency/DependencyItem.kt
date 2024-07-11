@@ -54,5 +54,17 @@ object DependencyItem {
         "cn.entertech.android:affective-offline-sdk-flowtime:1.2.3"
 
     const val affectiveSdkApi = "cn.entertech.android:affective_sdk_api:1.2.3"
+
+
+    const val entertechBase = "cn.entertech.android:base:latest.release"
+
+    const val room_version = "2.5.0"
+    const val database_room_runtime = "androidx.room:room-runtime:$room_version"
+    const val database_room_compiler = "androidx.room:room-compiler:$room_version"
+    const val database_room_ktx = "androidx.room:room-ktx:$room_version"
+    const val database_room_guava = "androidx.room:room-guava:$room_version"
+    const val database_room_test = "androidx.room:room-testing:$room_version"
+    const val database_room_paging = "androidx.room:room-paging:$room_version"
+
 }
 

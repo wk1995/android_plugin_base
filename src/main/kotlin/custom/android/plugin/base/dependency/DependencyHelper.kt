@@ -32,11 +32,21 @@ fun DependencyHandler.initDependencies() {
     add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.appcompat)
     add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.material)
     add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.constraintlayout)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.entertechBase)
     add(DependencyType.DEPENDENCY_TYPE_TEST_IMPLEMENTATION, DependencyItem.junit_junit)
     add(DependencyType.DEPENDENCY_TYPE_ANDROID_TEST_IMPLEMENTATION, DependencyItem.ext_junit)
     add(
         DependencyType.DEPENDENCY_TYPE_ANDROID_TEST_IMPLEMENTATION,
         DependencyItem.espresso_espresso_core
     )
+}
+
+fun DependencyHandler.databaseRoom(){
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.database_room_compiler)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.database_room_runtime)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.database_room_ktx)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.database_room_guava)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.database_room_test)
+    add(DEPENDENCY_TYPE_IMPLEMENTATION, DependencyItem.database_room_paging)
 }
 

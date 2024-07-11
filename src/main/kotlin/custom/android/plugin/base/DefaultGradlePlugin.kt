@@ -3,7 +3,6 @@ package custom.android.plugin.base
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import custom.android.plugin.base.dependency.DependencyType
-import custom.android.plugin.base.dependency.affectiveSdk
 import custom.android.plugin.base.dependency.initDependencies
 import custom.android.plugin.log.PluginLogUtil
 import custom.android.plugin.push.PublishOperate
@@ -91,7 +90,6 @@ open class DefaultGradlePlugin : Plugin<Project> {
             }
         project.dependencies {
             initDependencies()
-            affectiveSdk()
         }
     }
 

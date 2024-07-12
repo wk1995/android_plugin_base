@@ -66,5 +66,8 @@ object DependencyItem {
     const val database_room_test = "androidx.room:room-testing:$room_version"
     const val database_room_paging = "androidx.room:room-paging:$room_version"
 
+    const val ble_enter_tech = "cn.entertech.android:biomoduleble:2.2.2"
+    const val ble_enter_tech_rx = "com.entertech.android:biomoduleble_base_rx:0.0.1"
+
 }
 

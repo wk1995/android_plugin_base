@@ -5,10 +5,11 @@ import custom.android.plugin.base.dependency.DependencyType.DEPENDENCY_TYPE_KAPT
 import custom.android.plugin.base.dependency.DependencyType.DEPENDENCY_TYPE_TEST_IMPLEMENTATION
 import org.gradle.api.Action
 import org.gradle.api.artifacts.ExternalModuleDependency
+import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.accessors.runtime.addDependencyTo
 
-
+//function(){exclude("","","")}
 /**
  * @param configurationName see [DependencyType]
  * */
@@ -61,4 +62,52 @@ fun DependencyHandler.databaseRoom(exclude: Map<String, Action<ExternalModuleDep
     add(DEPENDENCY_TYPE_KAPT, DependencyItem.database_room_compiler)
     add(DEPENDENCY_TYPE_TEST_IMPLEMENTATION, DependencyItem.database_room_test)
 }
+
+fun DependencyHandler.ble() {
+    listOf(
+        DependencyItem.ble_enter_tech,
+        DependencyItem.ble_enter_tech_rx,
+    ).forEach {
+        add(DEPENDENCY_TYPE_IMPLEMENTATION, it)
+    }
+}
+
+private fun DependencyHandler.dependency(
+    dependencies: List<String>,exclude:(String,String,String)->Unit){
+
+}
+
+
+private fun DependencyHandler.dependency(
+    dependencies: List<String>,
+    dependencyNotation: String,
+    dependencyType: String = DEPENDENCY_TYPE_IMPLEMENTATION,
+    dependencyConfiguration: Action<ExternalModuleDependency>
+) {
+    dependency(
+        dependencies, mapOf(
+            Pair(dependencyNotation, Pair(dependencyType, dependencyConfiguration))
+        )
+    )
+}
+
+private fun DependencyHandler.dependency(
+    dependencies: List<String>,
+    map: Map<String, Pair<String, Action<ExternalModuleDependency>?>> = emptyMap()
+) {
+    dependencies.forEach { dependency ->
+        val pair = map[dependency]
+        val dependencyType = pair?.first ?: DEPENDENCY_TYPE_IMPLEMENTATION
+        val excludeAction = pair?.second ?: Action<ExternalModuleDependency> {}
+        addDependencyTo(
+            this@dependency, DEPENDENCY_TYPE_IMPLEMENTATION, dependencyType, excludeAction
+        )
+
+
+    }
+}
+
+//fun exclude(dependencyNotation: String?=null,group: String? = null, module: String? = null): T =
+
+
 

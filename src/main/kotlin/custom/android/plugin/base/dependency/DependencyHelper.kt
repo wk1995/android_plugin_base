@@ -72,8 +72,19 @@ fun DependencyHandler.ble() {
     }
 }
 
+fun DependencyHandler.lint() {
+    listOf(
+        DependencyItem.lint_api,
+        DependencyItem.lint_checks,
+    ).forEach {
+        add(DEPENDENCY_TYPE_IMPLEMENTATION, it)
+    }
+}
+
+
 private fun DependencyHandler.dependency(
-    dependencies: List<String>,exclude:(String,String,String)->Unit){
+    dependencies: List<String>, exclude: (String, String, String) -> Unit
+) {
 
 }
 

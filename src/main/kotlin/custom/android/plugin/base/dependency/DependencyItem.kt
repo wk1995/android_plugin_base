@@ -87,6 +87,10 @@ object DependencyItem {
     const val lifecycle_viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
     const val lifecycle_runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
 
+    const val lint_api = "com.android.tools.lint:lint-api:30.0.0"
+    const val lint_checks = "com.android.tools.lint:lint-checks:30.0.0"
+
+
 
 }
 

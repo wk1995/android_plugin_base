@@ -51,11 +51,11 @@ object DependencyItem {
 
 
     const val affectiveSdkOfflineFlowTime =
-        "cn.entertech.android:affective-offline-sdk-flowtime:1.2.3"
+        "cn.entertech.android:affective-offline-sdk-flowtime:latest.release"
 
-    const val affectiveSdkApi = "cn.entertech.android:affective_sdk_api:1.2.3"
+    const val affectiveSdkApi = "cn.entertech.android:affective_sdk_api:latest.release"
     const val affectiveSdkCloud =
-        "cn.entertech.android:affective-cloud-sdk:1.2.3"
+        "cn.entertech.android:affective-cloud-sdk:latest.release"
 
 
     const val entertechBase = "cn.entertech.android:base:latest.release"
@@ -68,8 +68,25 @@ object DependencyItem {
     const val database_room_test = "androidx.room:room-testing:$room_version"
     const val database_room_paging = "androidx.room:room-paging:$room_version"
 
-    const val ble_enter_tech = "cn.entertech.android:biomoduleble:2.2.2"
-    const val ble_enter_tech_rx = "com.entertech.android:biomoduleble_base_rx:0.0.1"
+    const val ble_enter_tech = "cn.entertech.android:biomoduleble:latest.release"
+    const val ble_enter_tech_rx = "com.entertech.android:biomoduleble_base_rx:latest.release"
+
+    const val retrofit2_adapter_rxjava = "com.squareup.retrofit2:adapter-rxjava2:2.5.0"
+    const val retrofit2_converter_gson = "com.squareup.retrofit2:converter-gson:2.9.0"
+    const val retrofit2_retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
+
+    const val okhttp = "com.squareup.okhttp3:okhttp:4.12.0"
+    const val okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:4.12.0"
+
+
+    const val rxjava2_rxjava = "io.reactivex.rxjava2:rxjava:2.2.7"
+    const val rxjava2_rxandroid = "io.reactivex.rxjava2:rxandroid:2.1.1"
+
+
+    const val gson = "com.google.code.gson:gson:2.8.5"
+    const val lifecycle_viewmodel_ktx = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    const val lifecycle_runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+
 
 }
 

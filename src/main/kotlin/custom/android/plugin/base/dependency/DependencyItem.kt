@@ -90,6 +90,8 @@ object DependencyItem {
     const val lint_api = "com.android.tools.lint:lint-api:30.0.0"
     const val lint_checks = "com.android.tools.lint:lint-checks:30.0.0"
 
+    const val android_build_gradle = "com.android.tools.build:gradle:8.1.3"
+    const val kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10"
 
 
 }

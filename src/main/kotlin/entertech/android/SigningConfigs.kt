@@ -1,4 +1,4 @@
-package custom.android.plugin.base
+package entertech.android
 
 /**
  * 签名文件信息配置

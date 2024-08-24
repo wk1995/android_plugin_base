@@ -73,7 +73,7 @@ abstract class BasePublishTask : DefaultTask() {
                 )
             }
             val result = out.toString()
-
+            PluginLogUtil.printlnDebugInScreen("result: $result")
             if (result.contains("UP-TO-DATE")) {
                 //上传maven仓库成功，上报到服务器
                 val isSuccess = requestUploadVersion()
@@ -152,5 +152,5 @@ abstract class BasePublishTask : DefaultTask() {
         return true
     }
 
-    abstract fun fetchTaskName():String
+    abstract fun fetchTaskName(): String
 }
